@@ -53,7 +53,8 @@ private:
   bool ack_payload_available; /**< Whether there is an ack payload waiting */
   bool dynamic_payloads_enabled; /**< Whether dynamic payloads are enabled. */ 
   uint8_t ack_payload_length; /**< Dynamic size of pending ack payload. */
-  uint64_t pipe0_reading_address; /**< Last address set on pipe 0 for reading. */
+  uint8_t pipe0_reading_address[5]; /**< Last address set on pipe 0 for reading. */
+  bool has_pipe0_reading_address;
 
 protected:
   /**
@@ -247,7 +248,7 @@ public:
   /**
    * Start listening on the pipes opened for reading.
    *
-   * Be sure to call openReadingPipe() first.  Do not call write() while
+   * Be sure to call listenOn() first.  Do not call write() while
    * in this mode, without first calling stopListening().  Call
    * isAvailable() to check for incoming traffic, and read() to get it.
    */
@@ -263,7 +264,7 @@ public:
   /**
    * Write to the open writing pipe
    *
-   * Be sure to call openWritingPipe() first to set the destination
+   * Be sure to call setDestination() first to set the destination
    * of where to write to.
    *
    * This blocks until the message is successfully acknowledged by
@@ -313,7 +314,7 @@ public:
    * Addresses are 40-bit hex values, e.g.:
    *
    * @code
-   *   openWritingPipe(0xF0F0F0F0F0);
+   *   setDestination(0xF0F0F0F0F0);
    * @endcode
    *
    * @param address The 40-bit address of the pipe to open.  This can be
@@ -321,33 +322,33 @@ public:
    * and only one other radio is listening to it.  Coordinate these pipe
    * addresses amongst nodes on the network.
    */
-  void openWritingPipe(uint64_t address);
-
+  void setDestination(const uint8_t *address);
+  
   /**
    * Open a pipe for reading
    *
    * Up to 6 pipes can be open for reading at once.  Open all the
    * reading pipes, and then call startListening().
    *
-   * @see openWritingPipe
+   * @see setDestination
    *
    * @warning Pipes 1-5 should share the first 32 bits.
    * Only the least significant byte should be unique, e.g.
    * @code
-   *   openReadingPipe(1,0xF0F0F0F0AA);
-   *   openReadingPipe(2,0xF0F0F0F066);
+   *   listenOn(1,0xF0F0F0F0AA);
+   *   listenOn(2,0xF0F0F0F066);
    * @endcode
    *
    * @warning Pipe 0 is also used by the writing pipe.  So if you open
    * pipe 0 for reading, and then startListening(), it will overwrite the
-   * writing pipe.  Ergo, do an openWritingPipe() again before write().
+   * writing pipe.  Ergo, do an setDestination() again before write().
    *
    * @todo Enforce the restriction that pipes 1-5 must share the top 32 bits
    *
    * @param number Which pipe# to open, 0-5.
    * @param address The 40-bit address of the pipe to open.
    */
-  void openReadingPipe(uint8_t number, uint64_t address);
+  void listenOn(uint8_t number, const uint8_t *address);
 
   /**@}*/
   /**

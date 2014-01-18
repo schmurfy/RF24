@@ -128,11 +128,11 @@ void setup(void)
 
   if ( role == role_remote )
   {
-    radio.openWritingPipe(pipe);
+    radio.setDestination(pipe);
   }
   else
   {
-    radio.openReadingPipe(1,pipe);
+    radio.listenOn(1,pipe);
   }
 
   //

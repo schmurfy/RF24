@@ -72,7 +72,7 @@ void setup(void)
   radio.setPayloadSize(4);
   radio.setAutoAck(false);
   radio.setCRCLength(RF24_CRC_8);
-  radio.openReadingPipe(1,0xE7E7E7E7E7LL);
+  radio.listenOn(1,0xE7E7E7E7E7LL);
 
   //
   // Start listening

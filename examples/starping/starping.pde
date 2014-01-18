@@ -148,11 +148,11 @@ void setup(void)
   // and sends the pong back on the sending node's specific listening pipe.
   if ( role == role_pong_back )
   {
-    radio.openReadingPipe(1,talking_pipes[0]);
-    radio.openReadingPipe(2,talking_pipes[1]);
-    radio.openReadingPipe(3,talking_pipes[2]);
-    radio.openReadingPipe(4,talking_pipes[3]);
-    radio.openReadingPipe(5,talking_pipes[4]);
+    radio.listenOn(1,talking_pipes[0]);
+    radio.listenOn(2,talking_pipes[1]);
+    radio.listenOn(3,talking_pipes[2]);
+    radio.listenOn(4,talking_pipes[3]);
+    radio.listenOn(5,talking_pipes[4]);
   }
 
   // Each ping node has a talking pipe that it will ping into, and a listening
@@ -160,9 +160,9 @@ void setup(void)
   if ( role == role_ping_out )
   {
     // Write on our talking pipe
-    radio.openWritingPipe(talking_pipes[node_address-2]);
+    radio.setDestination(talking_pipes[node_address-2]);
     // Listen on our listening pipe
-    radio.openReadingPipe(1,listening_pipes[node_address-2]);
+    radio.listenOn(1,listening_pipes[node_address-2]);
   }
 
   //
@@ -258,7 +258,7 @@ void loop(void)
       radio.stopListening();
 
       // Open the correct pipe for writing
-      radio.openWritingPipe(listening_pipes[pipe_num-1]);
+      radio.setDestination(listening_pipes[pipe_num-1]);
 
       // Retain the low 2 bytes to identify the pipe for the spew
       uint16_t pipe_id = listening_pipes[pipe_num-1] & 0xffff;

@@ -103,11 +103,11 @@ void setup(void)
 
   if ( role == role_sender )
   {
-    radio.openWritingPipe(pipe);
+    radio.setDestination(pipe);
   }
   else
   {
-    radio.openReadingPipe(1,pipe);
+    radio.listenOn(1,pipe);
   }
 
   //

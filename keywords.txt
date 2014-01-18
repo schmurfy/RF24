@@ -9,5 +9,5 @@
   write KEYWORD2
   available KEYWORD2
   read KEYWORD2
-  openWritingPipe KEYWORD2
-  openReadingPipe KEYWORD2
+  setDestination KEYWORD2
+  listenOn KEYWORD2

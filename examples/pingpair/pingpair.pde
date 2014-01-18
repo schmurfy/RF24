@@ -108,13 +108,13 @@ void setup(void)
 
   if ( role == role_ping_out )
   {
-    radio.openWritingPipe(pipes[0]);
-    radio.openReadingPipe(1,pipes[1]);
+    radio.setDestination(pipes[0]);
+    radio.listenOn(1,pipes[1]);
   }
   else
   {
-    radio.openWritingPipe(pipes[1]);
-    radio.openReadingPipe(1,pipes[0]);
+    radio.setDestination(pipes[1]);
+    radio.listenOn(1,pipes[0]);
   }
 
   //

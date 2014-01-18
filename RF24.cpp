@@ -601,13 +601,10 @@ void RF24::whatHappened(bool& tx_ok,bool& tx_fail,bool& rx_ready)
 
 /****************************************************************************/
 
-void RF24::openWritingPipe(uint64_t value)
+void RF24::setDestination(const uint8_t *address)
 {
-  // Note that AVR 8-bit uC's store this LSB first, and the NRF24L01(+)
-  // expects it LSB first too, so we're good.
-
-  write_register(RX_ADDR_P0, reinterpret_cast<uint8_t*>(&value), 5);
-  write_register(TX_ADDR, reinterpret_cast<uint8_t*>(&value), 5);
+  write_register(RX_ADDR_P0, address, 5);
+  write_register(TX_ADDR, address, 5);
 
   const uint8_t max_payload_size = 32;
   write_register(RX_PW_P0,min(payload_size,max_payload_size));
@@ -628,28 +625,25 @@ static const uint8_t child_pipe_enable[] PROGMEM =
   ERX_P0, ERX_P1, ERX_P2, ERX_P3, ERX_P4, ERX_P5
 };
 
-void RF24::openReadingPipe(uint8_t child, uint64_t address)
+
+void RF24::listenOn(uint8_t num, const uint8_t *address)
 {
   // If this is pipe 0, cache the address.  This is needed because
-  // openWritingPipe() will overwrite the pipe 0 address, so
+  // setDestination() will overwrite the pipe 0 address, so
   // startListening() will have to restore it.
-  if (child == 0)
     pipe0_reading_address = address;
+  if (num == 0)
 
-  if (child <= 6)
+  if (num <= 6)
   {
     // For pipes 2-5, only write the LSB
-    if ( child < 2 )
-      write_register(pgm_read_byte(&child_pipe[child]), reinterpret_cast<const uint8_t*>(&address), 5);
-    else
-      write_register(pgm_read_byte(&child_pipe[child]), reinterpret_cast<const uint8_t*>(&address), 1);
-
-    write_register(pgm_read_byte(&child_payload_size[child]),payload_size);
+    write_register(pgm_read_byte(&child_pipe[num]), address, (num < 2) ? 5 : 1);
+    write_register(pgm_read_byte(&child_payload_size[num]), payload_size);
 
     // Note it would be more efficient to set all of the bits for all open
     // pipes at once.  However, I thought it would make the calling code
     // more simple to do it this way.
-    write_register(EN_RXADDR,read_register(EN_RXADDR) | _BV(pgm_read_byte(&child_pipe_enable[child])));
+    write_register(EN_RXADDR,read_register(EN_RXADDR) | _BV(pgm_read_byte(&child_pipe_enable[num])));
   }
 }
 

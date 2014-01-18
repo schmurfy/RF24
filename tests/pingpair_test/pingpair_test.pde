@@ -209,14 +209,14 @@ void setup(void)
   if (configuration == '4' && role == role_sender)
   {
     // Set top 4 bytes of the address in pipe 1 
-    radio.openReadingPipe(1,pipe & 0xFFFFFFFF00ULL);
+    radio.listenOn(1,pipe & 0xFFFFFFFF00ULL);
 
     // indicate the pipe to use 
     pipe_number = 5;
   }
   else if ( role == role_sender )
   {
-    radio.openReadingPipe(5,0);
+    radio.listenOn(5,0);
   }
 
   //
@@ -228,11 +228,11 @@ void setup(void)
 
   if ( role == role_sender )
   {
-    radio.openWritingPipe(pipe);
+    radio.setDestination(pipe);
   }
   else
   {
-    radio.openReadingPipe(pipe_number,pipe);
+    radio.listenOn(pipe_number,pipe);
   }
 
   //

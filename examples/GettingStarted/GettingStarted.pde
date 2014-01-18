@@ -88,13 +88,13 @@ void setup(void)
 
   //if ( role == role_ping_out )
   {
-    //radio.openWritingPipe(pipes[0]);
-    radio.openReadingPipe(1,pipes[1]);
+    //radio.setDestination(pipes[0]);
+    radio.listenOn(1,pipes[1]);
   }
   //else
   {
-    //radio.openWritingPipe(pipes[1]);
-    //radio.openReadingPipe(1,pipes[0]);
+    //radio.setDestination(pipes[1]);
+    //radio.listenOn(1,pipes[0]);
   }
 
   //
@@ -210,8 +210,8 @@ void loop(void)
 
       // Become the primary transmitter (ping out)
       role = role_ping_out;
-      radio.openWritingPipe(pipes[0]);
-      radio.openReadingPipe(1,pipes[1]);
+      radio.setDestination(pipes[0]);
+      radio.listenOn(1,pipes[1]);
     }
     else if ( c == 'R' && role == role_ping_out )
     {
@@ -219,8 +219,8 @@ void loop(void)
       
       // Become the primary receiver (pong back)
       role = role_pong_back;
-      radio.openWritingPipe(pipes[1]);
-      radio.openReadingPipe(1,pipes[0]);
+      radio.setDestination(pipes[1]);
+      radio.listenOn(1,pipes[0]);
     }
   }
 }
