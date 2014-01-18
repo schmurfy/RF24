@@ -53,8 +53,6 @@ private:
   bool ack_payload_available; /**< Whether there is an ack payload waiting */
   bool dynamic_payloads_enabled; /**< Whether dynamic payloads are enabled. */ 
   uint8_t ack_payload_length; /**< Dynamic size of pending ack payload. */
-  uint8_t pipe0_reading_address[5]; /**< Last address set on pipe 0 for reading. */
-  bool has_pipe0_reading_address;
 
 protected:
   /**

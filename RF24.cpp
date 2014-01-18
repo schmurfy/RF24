@@ -240,8 +240,7 @@ void RF24::print_address_register(const char* name, uint8_t reg, uint8_t qty)
 
 RF24::RF24(uint8_t _cepin, uint8_t _cspin):
   ce_pin(_cepin), csn_pin(_cspin), wide_band(true), p_variant(false), 
-  payload_size(32), ack_payload_available(false), dynamic_payloads_enabled(false),
-  pipe0_reading_address(0)
+  payload_size(32), ack_payload_available(false), dynamic_payloads_enabled(false)
 {
 }
 
@@ -397,10 +396,6 @@ void RF24::startListening(void)
 {
   write_register(CONFIG, read_register(CONFIG) | _BV(PWR_UP) | _BV(PRIM_RX));
   write_register(STATUS, _BV(RX_DR) | _BV(TX_DS) | _BV(MAX_RT) );
-
-  // Restore the pipe0 adddress, if exists
-  if (pipe0_reading_address)
-    write_register(RX_ADDR_P0, reinterpret_cast<const uint8_t*>(&pipe0_reading_address), 5);
 
   // Flush buffers
   flush_rx();
@@ -628,14 +623,7 @@ static const uint8_t child_pipe_enable[] PROGMEM =
 
 void RF24::listenOn(uint8_t num, const uint8_t *address)
 {
-  // If this is pipe 0, cache the address.  This is needed because
-  // setDestination() will overwrite the pipe 0 address, so
-  // startListening() will have to restore it.
-    pipe0_reading_address = address;
-  if (num == 0)
-
-  if (num <= 6)
-  {
+  if (num <= 6){
     // For pipes 2-5, only write the LSB
     write_register(pgm_read_byte(&child_pipe[num]), address, (num < 2) ? 5 : 1);
     write_register(pgm_read_byte(&child_payload_size[num]), payload_size);
