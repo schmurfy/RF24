@@ -373,6 +373,19 @@ public:
    */
   void setChannel(uint8_t channel);
 
+  
+  /**
+   * Get/set enabled interrupts.
+   */
+  void setEnabledInterrupt(bool data_received, bool data_sent, bool max_retries);
+  void getEnabledInterrupt(bool &data_received, bool &data_sent, bool &max_retries);
+  
+  /**
+   * Define interrupt handler, num is an interrupt number not pin !
+   * check arduino documentation for valid values.
+   */
+  void attachInterruptCallback(uint8_t num, void (*userFunc)(void));
+  
   /**
    * Set Static Payload Size
    *

@@ -257,6 +257,33 @@ void RF24::setChannel(uint8_t channel)
 
 /****************************************************************************/
 
+void RF24::setEnabledInterrupt(bool data_received, bool data_sent, bool max_retries)
+{
+  uint8_t val = read_register(CONFIG);
+  
+  // NOTE: interrupt is enabled when bit is 0
+  
+  data_received ? val &= ~_BV(MASK_RX_DR)  : val |= _BV(MASK_RX_DR);
+  data_sent     ? val &= ~_BV(MASK_TX_DS)  : val |= _BV(MASK_TX_DS);
+  max_retries   ? val &= ~_BV(MASK_MAX_RT) : val |= _BV(MASK_MAX_RT);
+  
+  write_register(CONFIG, val);
+}
+
+void RF24::getEnabledInterrupt(bool &data_received, bool &data_sent, bool &max_retries)
+{
+  uint8_t val = read_register(CONFIG);
+  
+  data_received = (val & _BV(MASK_RX_DR)) == 0;
+  data_sent     = (val & _BV(MASK_TX_DS)) == 0;
+  max_retries   = (val & _BV(MASK_MAX_RT) == 0);
+}
+
+void RF24::attachInterruptCallback(uint8_t num, void (*userFunc)(void))
+{
+  attachInterrupt(num, userFunc, FALLING);
+}
+
 void RF24::setPayloadSize(uint8_t size)
 {
   const uint8_t max_payload_size = 32;
