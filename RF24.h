@@ -387,6 +387,12 @@ public:
   void attachInterruptCallback(uint8_t num, void (*userFunc)(void));
   
   /**
+   * Set/Get Adrress size, value values are: 3, 4, 5 (default)
+   */
+  void setAddressWidth(uint8_t size);
+  uint8_t getAddressWidth();
+  
+  /**
    * Set Static Payload Size
    *
    * This implementation uses a pre-stablished fixed payload size for all

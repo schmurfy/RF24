@@ -284,6 +284,30 @@ void RF24::attachInterruptCallback(uint8_t num, void (*userFunc)(void))
   attachInterrupt(num, userFunc, FALLING);
 }
 
+/****************************************************************************/
+
+void RF24::setAddressWidth(uint8_t size)
+{
+  uint8_t val = 0;
+  
+  switch(size){
+    case 3: val = 0x01; break;
+    case 4: val = 0x02; break;
+    case 5: val = 0x03; break;
+  }
+  
+  if( val != 0 ){
+    write_register(SETUP_AW, val);
+  }
+}
+
+uint8_t RF24::getAddressWidth()
+{
+  return read_register(SETUP_AW) + 2;
+}
+
+/****************************************************************************/
+
 void RF24::setPayloadSize(uint8_t size)
 {
   const uint8_t max_payload_size = 32;
